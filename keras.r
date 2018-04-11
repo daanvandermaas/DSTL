@@ -4,7 +4,7 @@ library(keras)
 source('read_batch.r')
 source('read_labels.r')
 
-path = 'db/landuse'
+path = file.path(getwd(), 'db', 'landuse')
 
 #data loading
 files = list.files( file.path(path, 'land-train'), full.names = FALSE, pattern = 'sat' )
