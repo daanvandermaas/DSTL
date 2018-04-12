@@ -22,7 +22,7 @@ train = data[split,]
 test = data[-split,]
 
 ######Parameters
-n = 5
+n = 4
   h = as.integer(600) #heigth image
 w = as.integer(600) #width image
 channels = 3L
@@ -42,8 +42,6 @@ opt<-optimizer_adam( lr= 0.001 , decay = 1e-7 )
 
 compile(model, loss="categorical_crossentropy", optimizer=opt, metrics = "accuracy")
 
-sess = k_get_session()
-
 model = load_model_hdf5('model')
 
 
@@ -53,10 +51,10 @@ for (i in 1:2000000) {
   print(i)
   #lees 50 random plaatjes in
   samp = sample(c(1:nrow(train)), 2)
-  window = matrix( sample(c(0:3), 2*n, replace = TRUE) , ncol = 2 )
+  windows =sample(c(1:n), 2, replace = TRUE )
   
-  batch_files = read_batch(files = train$images[samp], format = 'jpg', channels = 3, window = window)
-  batch_labels =  read_labels(files = train$labels[samp], window = window, class)
+  batch_files = read_batch(files = train$images[samp], format = 'jpg', channels = 3, windows = windows, n=n, w= w, h=h)
+  batch_labels =  read_labels(files = train$labels[samp], windows = windows, class = class, n=n, w=w, h=h)
 
   
   model$fit( x= batch_files, y= batch_labels, batch_size = dim(batch_files)[1], epochs = 1L  )
