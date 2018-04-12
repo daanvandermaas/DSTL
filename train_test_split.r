@@ -10,7 +10,7 @@ labels = unlist( lapply(files, function(x){
 labels = file.path(path, 'label-train', paste0(labels, '_mask.rds'))
 
 data = data.frame('images' = images, 'labels' =  labels)
-split = sample(x =  c(1:nrow(data)), size = round(0.8*nrow(data)) )
+split = sample(x =  c(1:nrow(data)), size = round(0.9*nrow(data)) )
 train = data[split,]
 test = data[-split,]
 
