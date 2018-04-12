@@ -1,7 +1,7 @@
-read_labels = function(files, window){
+read_labels = function(files, window, class){
   
   
-  batch = array(0, dim = c(length(files), w, h,classes))
+  batch = array(0, dim = c(length(files), w, h,class))
   
   for(i  in 1:length(files)){
     file = files[i]

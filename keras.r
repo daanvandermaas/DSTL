@@ -1,5 +1,6 @@
 #a linear stack of layers
 library(jpeg)
+library(tensorflow)
 library(keras)
 source('read_batch.r')
 source('read_labels.r')
@@ -26,7 +27,7 @@ n = 5
 w = as.integer(600) #width image
 channels = 3L
 max_pred = 0.8
-classes = 7
+class = 7
 #####
 
 # encoding layers
@@ -43,23 +44,27 @@ compile(model, loss="categorical_crossentropy", optimizer=opt, metrics = "accura
 
 sess = k_get_session()
 
-#model = load_model_hdf5(file.path(path,'models/model_all2'))
+model = load_model_hdf5('model')
 
 
 
 #Train the network
 for (i in 1:2000000) {
-  
+  print(i)
   #lees 50 random plaatjes in
   samp = sample(c(1:nrow(train)), 2)
   window = matrix( sample(c(0:3), 2*n, replace = TRUE) , ncol = 2 )
   
   batch_files = read_batch(files = train$images[samp], format = 'jpg', channels = 3, window = window)
-  batch_labels =  read_labels(files = train$labels[samp], window = window)
+  batch_labels =  read_labels(files = train$labels[samp], window = window, class)
 
   
   model$fit( x= batch_files, y= batch_labels, batch_size = dim(batch_files)[1], epochs = 1L  )
   
+  if(i%%1000 == 0 ){
+    print('model_saved')
+    model$save( file.path(path,'model' ))
+  }
   
   
 }
@@ -77,4 +82,4 @@ for (i in 1:2000000) {
 
 
 
-pred = sess$run(classes, feed_dict = dict(input_img = batch_files))
+#pred = sess$run(classes, feed_dict = dict(input_img = batch_files))

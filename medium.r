@@ -39,11 +39,9 @@ l7 = layer_batch_normalization()(l7)
 
 
 l8 =   layer_conv_2d( filter=128, kernel_size=c(1,1),padding="same",    input_shape=c(h,w,channels), activation = 'relu' )(l7) 
-l8 =   layer_conv_2d( filter=7, kernel_size=c(1,1),padding="same",    input_shape=c(h,w,channels), activation = 'relu' )(l8) 
+out =   layer_conv_2d( filter=7, kernel_size=c(1,1),padding="same",    input_shape=c(h,w,channels), activation = 'softmax' )(l8) 
 
-out = layer_activation_softmax(l8)
 
-classes = k_argmax(out)
 
 model = keras_model(inputs = input_img, outputs = out)
 
