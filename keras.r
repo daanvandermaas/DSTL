@@ -8,19 +8,8 @@ source('read_labels.r')
 path = file.path(getwd(), 'db', 'landuse')
 
 #data loading
-files = list.files( file.path(path, 'land-train'), full.names = FALSE, pattern = 'sat' )
-images = file.path(path, 'land-train', files)
-
-labels = unlist( lapply(files, function(x){
-  strsplit(x, '[_.]')[[1]][1]
-}))
-labels = file.path(path, 'label-train', paste0(labels, '_mask.rds'))
-
-data = data.frame('images' = images, 'labels' =  labels)
-split = sample(x =  c(1:nrow(data)), size = round(0.8*nrow(data)) )
-train = data[split,]
-test = data[-split,]
-
+train = readRDS( file.path(path, 'train.rds'))
+test = readRDS( file.path(path, 'test.rds'))
 ######Parameters
 n = 4
   h = as.integer(600) #heigth image

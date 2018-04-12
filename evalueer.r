@@ -36,7 +36,8 @@ plot(pred)
 dev.off()
 
 im = Image(batch_files[1,,,], colormode = 'Color' )
-im = im[dim(im)[1]:1 , dim(im)[2]:1,]
+im = rotate(im, 90)
+im = im[dim(im)[1]:1,,]
 png( file.path('db', 'result_all', paste0( i, '_', window, '_', 'image' , '.png'))  )
 plot(im , all = TRUE)
 dev.off()
