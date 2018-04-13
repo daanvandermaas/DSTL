@@ -10,11 +10,18 @@ path = file.path(getwd(), 'db', 'landuse')
 #data loading
 train = readRDS( file.path(path, 'train.rds'))
 test = readRDS( file.path(path, 'test.rds'))
+
+train$images = file.path(path, 'land-train', train$images)
+train$labels = file.path(path, 'label-train', paste0(train$labels, '_mask.rds'))
+test$images = file.path(path, 'land-train', test$images)
+test$labels = file.path(path, 'label-train', paste0(test$labels, '_mask.rds'))
+
+
 ######Parameters
-batch_size = 6
+batch_size = 1
 n = 4
-  h = as.integer(600) #heigth image
-w = as.integer(600) #width image
+  h = 608 #heigth image
+w = 608 #width image
 channels = 3L
 class = 7
 #####
@@ -22,16 +29,16 @@ class = 7
 # encoding layers
 
 
-
-source('medium.r')
+source('big.r')
+#source('medium.r')
 
 #source('model_small.r')
 
-opt<-optimizer_adam( lr= 0.001 , decay = 1e-9 )
+opt<-optimizer_adam( lr= 0.0001 , decay = 0 )
 
 compile(model, loss="categorical_crossentropy", optimizer=opt, metrics = "accuracy")
 
-model = load_model_hdf5('db/model_old')
+
 
 
 
@@ -48,8 +55,10 @@ for (i in 1:2000000) {
   model$fit( x= batch_files, y= batch_labels, batch_size = dim(batch_files)[1], epochs = 1L  )
   
   if(i%%300 == 0 ){
+    print('model saved')
     print(i)
     model$save( file.path(path,'model' ))
+    
   }
   
   

@@ -1,6 +1,15 @@
 
 library(EBImage)
 library(raster)
+library(keras)
+library(jpeg)
+
+
+source('read_batch.r')
+source('read_labels.r')
+
+
+model = load_model_hdf5('db/model')
 
 cols <- c(
   '0' = "blue", #water
@@ -13,7 +22,19 @@ cols <- c(
 )
 
 
+path = file.path(getwd(), 'db', 'landuse')
 
+#data loading
+train = readRDS( file.path(path, 'train.rds'))
+test = readRDS( file.path(path, 'test.rds'))
+
+
+
+n = 2
+h = floor(as.integer(2448)/n) #heigth image
+w = floor(as.integer(2448)/n) #width image
+channels = 3L
+class = 7
 
 
 for(i in 1:nrow(train)){
@@ -36,7 +57,7 @@ plot(pred)
 dev.off()
 
 im = Image(batch_files[1,,,], colormode = 'Color' )
-im = rotate(im, 90)
+im = EBImage::rotate(im, 90)
 im = im[dim(im)[1]:1,,]
 png( file.path('db', 'result_all', paste0( i, '_', window, '_', 'image' , '.png'))  )
 plot(im , all = TRUE)
