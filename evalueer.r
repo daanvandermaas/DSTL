@@ -1,4 +1,3 @@
-
 library(EBImage)
 library(raster)
 library(keras)
@@ -26,18 +25,24 @@ path = file.path(getwd(), 'db', 'landuse')
 
 #data loading
 train = readRDS( file.path(path, 'train.rds'))
+train$images = file.path(path, 'land-train', train$images)
+train$labels = file.path(path, 'label-train', paste0(train$labels, '_mask.rds') )
+
 test = readRDS( file.path(path, 'test.rds'))
+test$images = file.path(path,  'land-train', test$images)
+test$labels = file.path(path, 'label-train', paste0(test$labels, '_mask.rds') )
 
-
-
+######Parameters
+batch_size = 1
 n = 2
-h = floor(as.integer(2448)/n) #heigth image
-w = floor(as.integer(2448)/n) #width image
+h = 1216 #heigth image dim image = 2448
+w = 1216 #width image
 channels = 3L
 class = 7
+#####
 
 
-for(i in 1:nrow(train)){
+for(i in 2:nrow(train)){
   for(window in 1:9){
     
     
@@ -78,41 +83,5 @@ dev.off()
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-A = matrix(c( "black", "black","red","red"  ), nrow = 2)
-
-A = matrix(c( "#555555", "#555555","#555555","#555555"  ), nrow = 2)
-A = as.raster(A)
-cols = c('red', 'blue', 'blue', 'red')
 
 

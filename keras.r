@@ -18,10 +18,10 @@ test$labels = file.path(path, 'label-train', paste0(test$labels, '_mask.rds'))
 
 
 ######Parameters
-batch_size = 1
+batch_size = 2
 n = 4
-  h = 608 #heigth image
-w = 608 #width image
+  h = as.integer(608) #heigth image dim image = 2448
+w = as.integer(608) #width image
 channels = 3L
 class = 7
 #####
@@ -34,7 +34,7 @@ source('big.r')
 
 #source('model_small.r')
 
-opt<-optimizer_adam( lr= 0.0001 , decay = 0 )
+opt<-optimizer_adam( lr= 0.001 , decay = 0 )
 
 compile(model, loss="categorical_crossentropy", optimizer=opt, metrics = "accuracy")
 
@@ -52,7 +52,7 @@ for (i in 1:2000000) {
   batch_labels =  read_labels(files = train$labels[samp], windows = windows, class = class, n=n, w=w, h=h)
 
   
-  model$fit( x= batch_files, y= batch_labels, batch_size = dim(batch_files)[1], epochs = 1L  )
+  model$fit( x= batch_files, y= batch_labels, batch_size = dim(batch_files)[1], epochs = 1L, class_weight = list(10,10,10,1,5,10,10)  )
   
   if(i%%300 == 0 ){
     print('model saved')
