@@ -47,13 +47,13 @@ for (i in 1:2000000) {
   print(i)
   #lees 50 random plaatjes in
   samp = sample(c(1:nrow(train)), 1)
-  windows =sample(c(1:parts^2), batch_size, replace = TRUE )
+  windows = c(1:parts^2)
   
   batch_files = read_batch(files = train$images[samp], format = 'jpg', channels = channels, windows = windows, parts=parts, w= w, h=h)
   batch_labels =  read_labels_select(files = train$labels[samp], windows = windows, class = class, parts=parts, w=w, h=h, pick = pick)
 
   
-  model$fit( x= batch_files, y= batch_labels, batch_size = dim(batch_files)[1], epochs = 1L, class_weight = list(1,1)  )
+  model$fit( x= batch_files, y= batch_labels, batch_size = batch_size, epochs = 1L, class_weight = list(1,1)  )
   
   if(i%%4000 == 0 ){
     print(i)

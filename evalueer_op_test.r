@@ -18,33 +18,31 @@ test = file.path( getwd(), 'db', 'landuse', 'land-valid' , test)
 
 
 for(n in 1:length(test)){
-  window = c(1:8)
-    
+  for(window in 1:16){
     
     
     batch_files = read_batch(files = test[n], format = 'jpg', channels = channels, windows = window, parts = parts, h=h, w=w)
     pred = sess$run(predictie, feed_dict = dict(input_img = batch_files))
     
     
-    for(m in 1:dim(pred[1])){
     
     png(file.path(getwd(), 'db', 'result_all', i,  paste0(  n, '_', window, '_', 'prediction' , '.png')) )
-    plot( as.raster(pred[m,,]) )
+    plot( as.raster(pred[1,,]) )
     dev.off()
     
-    im = Image(batch_files[m,,,], colormode = 'Color' )
+    im = Image(batch_files[1,,,], colormode = 'Color' )
     im = EBImage::rotate(im, 90)
     im = im[dim(im)[1]:1,,]
     png(file.path(getwd(), 'db', 'result_all', i,  paste0(  n, '_', window, '_', 'image' , '.png')) )
     plot(im , all = TRUE)
     dev.off()
     
-    }
+    
     
     
   }
 
 
 }
-
+}
 
