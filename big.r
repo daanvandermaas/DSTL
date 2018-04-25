@@ -106,7 +106,7 @@ l1_up = layer_batch_normalization()(l1_up)
 out =   layer_conv_2d( filter=class, kernel_size=c(1,1),padding="same",     activation = 'sigmoid' )(l1_up) 
 
 
-
+predictie = tf$argmax(out, axis = -1L)
 
 
 

@@ -10,7 +10,7 @@ labels = unlist( lapply(files, function(x){
 
 
 data = data.frame('images' = files, 'labels' =  labels)
-split = sample(x =  c(1:nrow(data)), size = round(0.9*nrow(data)) )
+split = sample(x =  c(1:nrow(data)), size = round(1*nrow(data)) )
 train = data[split,]
 test = data[-split,]
 

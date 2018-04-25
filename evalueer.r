@@ -5,7 +5,7 @@ library(jpeg)
 
 
 source('read_batch.r')
-source('read_labels.r')
+source('read_labels_select.r')
 
 
 model = load_model_hdf5('db/model')
@@ -33,27 +33,28 @@ test$images = file.path(path,  'land-train', test$images)
 test$labels = file.path(path, 'label-train', paste0(test$labels, '_mask.rds') )
 
 ######Parameters
-batch_size = 1
-n = 2
-h = 1216 #heigth image dim image = 2448
-w = 1216 #width image
+batch_size = 2
+n = 4
+h = as.integer(608) #heigth image dim image = 2448
+w = as.integer(608) #width image
 channels = 3L
-class = 7
+class = 2
+pick = 5
 #####
 
 
-for(i in 2:nrow(train)){
-  for(window in 1:9){
-    
-    
 
-batch_files = read_batch(files = train$images[i], format = 'jpg', channels = 3, windows = window, n = n, h=h, w=w)
-batch_labels =  read_labels(files = train$labels[i], windows = window, class =class, n=n, w=w, h=h)
+for(i in 1:nrow(train)){
+  print(paste('image: ', i))
+window = c(1:16)    
+
+batch_files = read_batch(files = train$images[i], format = 'jpg', channels = 3, windows = window, parts = parts, h=h, w=w)
+batch_labels =  read_labels_select(files = train$labels[i], windows = window, class =class, parts=parts, w=w, h=h, pick = pick)
 pred = model$predict(x = batch_files)
 
 
 pred = apply(pred, c(2,3), function(x){
- cols[which(x == max(x))]
+ unlist(as.character(cols[which(x == max(x))]) )[1]
 })
 pred = as.raster(pred )
 
@@ -79,7 +80,7 @@ dev.off()
 
 
 
-}
+
 }
 
 
