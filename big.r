@@ -1,4 +1,4 @@
-input_img = layer_input(shape = c(h, w, channels)) 
+input_img = layer_input(shape = c(w, h, channels)) 
 
 
 l0 = layer_conv_2d( filter=64, kernel_size=c(3,3),padding="same",     activation = 'relu' )(input_img) 

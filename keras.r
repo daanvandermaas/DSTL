@@ -16,7 +16,6 @@ train = readRDS( file.path(getwd(), 'db', 'landuse', 'train.rds'))
 train$images = file.path(getwd(), 'db', 'landuse', 'land-train', train$images)
 train$labels = file.path(getwd(), 'db', 'landuse', 'label-train', paste0(train$labels, '_mask.rds'))
 
-test = list.files('db/landuse/land-valid')[1:20]
 
 
 ######Parameters
@@ -33,13 +32,11 @@ pick = 5
 # encoding layers
 
 
-source('big.r')
+source('Unet.r')
 
-opt<-optimizer_adam( lr= 2.7^(-4) , decay = 0,  clipnorm = 1 )
+opt<-optimizer_adam( lr= 0.0001 , decay = 0,  clipnorm = 1 )
 
 compile(model, loss="categorical_crossentropy", optimizer=opt, metrics = "accuracy")
-
-sess = k_get_session()
 
 
 
@@ -50,7 +47,7 @@ for (epoch in 1:epochs) {
   order = sample(c(1:nrow(train) ), nrow(train))
   train = train[order,]
   
-  print(paste('epoch:', epoch))
+
   
   
   for(i in 1:nrow(train)){
@@ -58,12 +55,13 @@ for (epoch in 1:epochs) {
   windows = c(1:parts^2)
   
   batch_files = read_batch(files = train$images[i], format = 'jpg', channels = channels, windows = windows, parts=parts, w= w, h=h)
-  batch_labels =  read_labels_select(files = train$labels[samp], windows = windows, class = class, parts=parts, w=w, h=h, pick = pick)
+  batch_labels =  read_labels_select(files = train$labels[i], windows = windows, class = class, parts=parts, w=w, h=h, pick = pick)
 
   
-  model$fit( x= batch_files, y= batch_labels, batch_size = batch_size, epochs = 1L, class_weight = list(1,1)  )
+  model$fit( x= batch_files, y= batch_labels, batch_size = batch_size, epochs = 1L )
   
-}
+  }
+  print(paste('epoch:', epoch))
     model$save( paste0('db/model_', epoch) )
     
   
@@ -74,3 +72,4 @@ for (epoch in 1:epochs) {
 
 #model$evaluate(x = batch_files, y = batch_labels)
 
+#model = keras::load_model_hdf5('db/model_2')

@@ -1,5 +1,27 @@
-evalueer = function(test, i, model, parts, w, h, sess){
+library(keras)
+library(EBImage)
+library(tensorflow)
 
+parts = 4
+h = as.integer(608) #heigth image dim image = 2448
+w = as.integer(608) #width image
+class = 2
+test = list.files('db/landuse/land-valid')[1:20]
+
+for(i in 1:length(test)){
+
+evalueer(test = test, h = h, w = w, i=i, parts = 4)
+
+}
+
+
+evalueer = function(test, i, parts, w, h, class){
+
+  
+  model = load_model_hdf5(paste0('db/model_', i))
+  
+  
+  
 cols <- c(
   '0' = "blue", #water
   '1' = "green", #forrest
@@ -28,9 +50,12 @@ for(n in 1:length(test)){
     
  a= array(batch_files[1,,,] , dim = c(1,w,h, channels))
 
-    pred = sess$run( predictie, feed_dict = dict(input_img = a ))
+    pred = model$predict(x = a)
     
-    
+pred=     apply(pred, c(1,2,3), function(x){
+      (which(x== max(x))[1] -1)/(class -1)
+    })
+
     
     png(file.path(getwd(), 'db', 'result_all', i,  paste0(  n, '_', m, '_', 'prediction' , '.png')) )
     plot( as.raster(pred[1,,]) )
