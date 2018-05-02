@@ -1,6 +1,35 @@
 read_labels_select = function(files, windows, class, parts,w,h, pick){
   
   
+  if(pick == 100){
+    
+    batch = array(0, dim = c(length(windows), w, h,class))
+    
+    
+    for(i in 1:length(files)){
+      
+      file = files[i]
+      im = readRDS(as.character(file))
+      
+      
+      
+      for(j in 1:length(windows)){
+        window = windows[j]
+        y=  floor( (window -1 )/parts) +1
+        x = window - (y-1)*parts
+        
+        
+        
+        batch[j,,,] = im[ ((x-1)*w + 1)  :(x*w) , ((y-1)*h + 1)  :(y*h)  , ]
+      }
+      
+    }
+    
+    return(batch)
+    
+    
+  }else{
+  
   batch = array(0, dim = c(length(windows), w, h,class))
   
   
@@ -25,4 +54,5 @@ read_labels_select = function(files, windows, class, parts,w,h, pick){
   }
   
   return(batch)
+  }
 }

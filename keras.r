@@ -20,13 +20,13 @@ train$labels = file.path(getwd(), 'db', 'landuse', 'label-train', paste0(train$l
 
 ######Parameters
 epochs = 280
-batch_size = 4
+batch_size = 4L
 parts = 4
   h = as.integer(608) #heigth image dim image = 2448
 w = as.integer(608) #width image
 channels = 3L
-class = 2
-pick = 5
+class = 7L
+pick = 100L
 #####
 
 # encoding layers
