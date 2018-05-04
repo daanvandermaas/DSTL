@@ -8,7 +8,8 @@ library(raster)
 
 source('read_batch.r')
 source('read_labels_select.r')
-source('evalueer_op_test.r')
+source('augement.r')
+source('augment_labels.r')
 
 
 #data loading
@@ -53,9 +54,11 @@ for (epoch in 1:epochs) {
   for(i in 1:nrow(train)){
   
   windows = c(1:parts^2)
+  rot = sample(x = c(0,1,2,3), size = 1)
+  flip = sample(x = c(TRUE, FALSE), size = 1)
   
-  batch_files = read_batch(files = train$images[i], format = 'jpg', channels = channels, windows = windows, parts=parts, w= w, h=h)
-  batch_labels =  read_labels_select(files = train$labels[i], windows = windows, class = class, parts=parts, w=w, h=h, pick = pick)
+  batch_files = read_batch(files = train$images[i], format = 'jpg', channels = channels, windows = windows, parts=parts, w= w, h=h, rot = rot, flip, aug = TRUE)
+  batch_labels =  read_labels_select(files = train$labels[i], windows = windows, class = class, parts=parts, w=w, h=h, pick = pick, flip, aug = TRUE)
 
   
   model$fit( x= batch_files, y= batch_labels, batch_size = batch_size, epochs = 1L )

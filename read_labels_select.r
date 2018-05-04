@@ -1,4 +1,4 @@
-read_labels_select = function(files, windows, class, parts,w,h, pick){
+read_labels_select = function(files, windows, class, parts,w,h, pick, rot, aug){
   
   
   if(pick == 100){
@@ -11,7 +11,9 @@ read_labels_select = function(files, windows, class, parts,w,h, pick){
       file = files[i]
       im = readRDS(as.character(file))
       
-      
+      if(aug){
+      im = augment_labels(im = im, flip = flip, rot = rot)
+      }
       
       for(j in 1:length(windows)){
         window = windows[j]
